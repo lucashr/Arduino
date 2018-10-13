@@ -160,8 +160,7 @@ void dispMenu()                                         //Mostra o menu atual
 } //end dispMenu
 
 void data_hora()                                        
-{
-    
+{    
    disp.setCursor(0,0);                                 
    disp.print("Data");                          
    disp.setCursor(0,1);                                 
@@ -357,10 +356,7 @@ void dispSubMenu3()
              readEnter(3);                                           
              
              break;
-        
-    
     } 
-
 } 
 
  
@@ -372,8 +368,7 @@ void readEnter(char option)                            //Leitura do botão enter
    
    if(digitalRead(butEnter) && t_butEnter)                  //Botão enter solto e flag setada?
    {                                                   
-        t_butEnter = 0x00;                                //Limpa flag
-        
+        t_butEnter = 0x00;                                //Limpa flag        
         switch(option)
         {
            case 0x01: subMenuSaidas_temperatura(); break;
@@ -382,13 +377,9 @@ void readEnter(char option)                            //Leitura do botão enter
            
            case 0x03: subMenuSaidas_pressao(); break;
 
-           case 0x04: subMenuSaidas_indiceUv(); break;
-        
-        } 
-   
+           case 0x04: subMenuSaidas_indiceUv(); break;        
+        }    
    } 
-
-
 } 
 
 
@@ -412,7 +403,6 @@ void subMenuSaidas_temperatura()
   //if(digitalRead(butEnter) && t_butEnter) 
 
 }
-
 
 void subMenuSaidas_umidade()
 {
@@ -476,7 +466,6 @@ void bytesTemperatura(int quantidade_bytes_esperados) { // Esta funcao sera exec
 
     Serial.println("Relogio");
     Serial.println((String)horas + ":" + (String)minutos + ":" + (String)segundos);
-
     
     // Ajustando os bytes recebidos para obter a temperaturadht
     aux = Tbyte2;                     // Ajusta a parte fracionaria (depois da virgula)
@@ -503,7 +492,62 @@ void bytesTemperatura(int quantidade_bytes_esperados) { // Esta funcao sera exec
 
     Serial.println("PressÃƒÂ£o atmosferica:");
     Serial.println(pAtm);
-   
+
+/*
+  Temperatura, umidade, pressao e indice uv.
+  1º descobrir para qual tipo de variavel (sensor) o comando sera dado
+    - 1º bit: Indicador de funcao
+    - 2º bit: Valor a ser setada
+  2º Alocar os valores para as devidas variaveis
+
+  ======= VARIAVEIS DA FUNÇÃO progAcionamento() ===========
+  opc: Tipo de programação de acionamento
+  tempAc: Tempo pelo qual a saida ficara em estado ativo
+  datAcio: Acionamento por data
+  tempAcio: Acionamento por intervalo de tempo ou hora, minuto, segundo agendado
+*/
+    void progAcionamento()
+    {
+      switch(opc)
+      {
+        case 1:
+        acionaPorTmp();
+        break;
+
+        case 2:
+        acionaPorUmd();
+        break;
+
+        case 3:
+        acionaPorPres();
+        break;
+
+        case 4:
+        acionaPorIndv();
+        break;       
+
+      }
+      
+      void acionaPorTmp()
+      {
+        
+      }
+
+      void acionaPorUmd()
+      {
+        
+      }
+
+      void acionaPorPres()
+      {
+        
+      }
+
+      void acionaPorIndv()
+      {
+        
+      }
+      
+    }
+    
 }
-
-
