@@ -1,6 +1,7 @@
 #include <Wire.h>                //Inclui a biblioteca I2C
 #include <LiquidCrystal.h>
 
+//============================================================================================================//
 // --- Mapeamento de Hardware ---
 #define butUp    12                                     
 #define butDown  11                                     
@@ -10,6 +11,7 @@
 #define Lamp1    A0                                     
 #define Lamp2    A1                                     
 
+//============================================================================================================//
 // --- Prototipo das funções Auxiliares ---
 void changeMenu();                                      
 void dispMenu();                                        
@@ -70,8 +72,6 @@ byte grau[8] ={ B00001100,
                 B00000000, 
                 B00000000, 
                 B00000000,};
-
-
 
 void setup()
 {
