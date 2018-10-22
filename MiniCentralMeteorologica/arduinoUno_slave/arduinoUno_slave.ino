@@ -27,7 +27,10 @@ void subMenuSaidas_umidade();
 void subMenuSaidas_pressao();
 void subMenuSaidas_indiceUv();
 
-byte caracter = 0x00;
+byte val_hora = 0x00;
+byte val_min = 0x00;
+
+//bool flag_ValHoraSetada = false;
 
 
 // --- Variaveis Globais ---
@@ -91,7 +94,7 @@ void setup()
   Wire.onReceive(bytesTemperatura);                     
   Serial.begin(115200);            
   
-  // Cria o caracter customizado com o simbolo do grau
+  // Cria o val_hora customizado com o simbolo do grau
    disp.createChar(0, grau); 
 }
 
@@ -385,23 +388,163 @@ void readEnter(char option)                            //Leitura do botão enter
 
 void subMenuSaidas_temperatura()
 {
+  disp.setCursor(0,0);                                 
+  disp.print("Valor do timer");                              
+  disp.setCursor(0,1);
+  disp.print("Formato: H:M");                                                         
+  
+  valEntradaHora();
+  valEntradaMin();
+  disp.clear();
+  painelSensores();
+  
+}
+
+void valEntradaHora()
+{
+  disp.setCursor(0,2);
+  
+  bool t = true;
+  t_butUp = 0x00;
+  t_butDown = 0x00;
   t_butEnter = 0x00;
-  while(1)
-  {
-   if(!digitalRead(butEnter)) return; //botao enter pressionada? flag setada
-   disp.setCursor(0,0);                                 
-   disp.print("Valor do timer");                              
-   disp.setCursor(0,1);
-   disp.print("Formato: H:M:S");                                                         
-   disp.setCursor(0,2);
-   if(!digitalRead(butUp)) caracter += 0x01; 
-   if(!digitalRead(butDown)) caracter -= 0x01;
-   disp.print(caracter);
+  
+  while(t)
+  {  
+   if(!digitalRead(butUp)) t_butUp = 0x01;
+   
+   if(digitalRead(butUp) && t_butUp) 
+   {
+    val_hora < 23 ? val_hora++ : val_hora = 0; 
+    t_butUp = 0x00;
+   }
+   
+   if(!digitalRead(butDown)) t_butDown = 0x01;
+   
+   if(digitalRead(butDown) && t_butDown)
+   {
+    val_hora > 0 ? val_hora-- : val_hora = 23;
+    t_butDown = 0x00;
+   }
+   
+   if(val_hora < 10) 
+   {
+    disp.setCursor(1,2);//colunaXlinha
+    disp.print(" ");
+    disp.setCursor(0,2);
+    disp.print(val_hora);
+   }
+   if(val_hora > 9)
+   {
+    disp.setCursor(0,2);//colunaXlinha
+    disp.print(" ");
+    disp.setCursor(0,2);
+    disp.print(val_hora);
+   }
+
+   if(!digitalRead(butEnter)) t_butEnter = 0x01; //botao enter pressionada? flag setada
+   if(digitalRead(butEnter) && t_butEnter)
+   {
+    t = false; //botao enter solto e flag setada
+   }
    
   }
-  //t_butEnter = 0x00;
-  //if(digitalRead(butEnter) && t_butEnter) 
+  
+}
 
+void valEntradaMin()
+{
+  bool t = true;
+  t_butUp = 0x00;
+  t_butDown = 0x00;
+  t_butEnter = 0x00;
+  
+  while(t)
+  {  
+   if(!digitalRead(butUp)) t_butUp = 0x01;
+   
+   if(digitalRead(butUp) && t_butUp) 
+   {
+    val_min < 59 ? val_min++ : val_min = 0; 
+    t_butUp = 0x00;
+   }
+   
+   if(!digitalRead(butDown)) t_butDown = 0x01;
+   
+   if(digitalRead(butDown) && t_butDown)
+   {
+    val_min > 0 ? val_min-- : val_min = 59;
+    t_butDown = 0x00;
+   }
+   
+   if(val_hora < 10) 
+   {
+    disp.setCursor(1,2);//colunaXlinha
+    disp.print(":");
+    
+    if(val_min < 10) 
+   {
+    disp.setCursor(2,2);//colunaXlinha
+    disp.print("   ");
+    disp.setCursor(2,2);
+    disp.print(val_min);
+   }
+   
+   if(val_min > 9)
+   {
+    disp.setCursor(2,2);//colunaXlinha
+    disp.print("   ");
+    disp.setCursor(2,2);
+    disp.print(val_hora);
+   }
+      
+   }
+   if(val_hora > 9)
+   {
+    disp.setCursor(2,2);//colunaXlinha
+    disp.print(":");
+    
+    if(val_min < 10) 
+   {
+    disp.setCursor(3,2);//colunaXlinha
+    disp.print("  ");
+    disp.setCursor(3,2);
+    disp.print(val_min);
+   }
+   
+   if(val_min > 9)
+   {
+    disp.setCursor(3,2);//colunaXlinha
+    disp.print("  ");
+    disp.setCursor(3,2);
+    disp.print(val_hora);
+   }
+   }
+
+   /*if(val_min < 10) 
+   {
+    disp.setCursor(3,2);//colunaXlinha
+    disp.print(" ");
+    disp.setCursor(2,2);
+    disp.print(val_min);
+   }*/
+   
+   /*if(val_min > 9)
+   {
+    disp.setCursor(2,2);//colunaXlinha
+    disp.print(" ");
+    disp.setCursor(2,2);
+    disp.print(val_hora);
+   }*/
+
+   if(!digitalRead(butEnter)) t_butEnter = 0x01; //botao enter pressionada? flag setada
+   if(digitalRead(butEnter) && t_butEnter)
+   {
+    t = false; //botao enter solto e flag setada
+   }
+   
+  }
+  
 }
 
 void subMenuSaidas_umidade()
@@ -492,7 +635,7 @@ void bytesTemperatura(int quantidade_bytes_esperados) { // Esta funcao sera exec
 
     Serial.println("PressÃƒÂ£o atmosferica:");
     Serial.println(pAtm);
-
+}
 /*
   Temperatura, umidade, pressao e indice uv.
   1º descobrir para qual tipo de variavel (sensor) o comando sera dado
@@ -506,48 +649,4 @@ void bytesTemperatura(int quantidade_bytes_esperados) { // Esta funcao sera exec
   datAcio: Acionamento por data
   tempAcio: Acionamento por intervalo de tempo ou hora, minuto, segundo agendado
 */
-    void progAcionamento()
-    {
-      switch(opc)
-      {
-        case 1:
-        acionaPorTmp();
-        break;
-
-        case 2:
-        acionaPorUmd();
-        break;
-
-        case 3:
-        acionaPorPres();
-        break;
-
-        case 4:
-        acionaPorIndv();
-        break;       
-
-      }
-      
-      void acionaPorTmp()
-      {
-        
-      }
-
-      void acionaPorUmd()
-      {
-        
-      }
-
-      void acionaPorPres()
-      {
-        
-      }
-
-      void acionaPorIndv()
-      {
-        
-      }
-      
-    }
     
-}
