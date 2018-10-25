@@ -300,6 +300,7 @@ void acionamentoSaidas()
     
    dispSubMenu3();
 
+   return;
 } //end menu4
 
 void dispSubMenu3()                                     
@@ -358,14 +359,17 @@ void dispSubMenu3()
              disp.print("Indice UV");   
              readEnter(3);                                           
              
-             break;
+             break;             
     } 
+
+    return;
+
 } 
 
  
 void readEnter(char option)                            //Leitura do botão enter para seleção de subMenus
 {
-    
+      
    if(!digitalRead(butEnter))     t_butEnter    = 0x01;      //Botão enter pressionado? Seta flag
    
    
@@ -381,8 +385,11 @@ void readEnter(char option)                            //Leitura do botão enter
            case 0x03: subMenuSaidas_pressao(); break;
 
            case 0x04: subMenuSaidas_indiceUv(); break;        
-        }    
-   } 
+        }
+                   
+   }
+
+   return;   
 } 
 
 
@@ -391,13 +398,14 @@ void subMenuSaidas_temperatura()
   disp.setCursor(0,0);                                 
   disp.print("Valor do timer");                              
   disp.setCursor(0,1);
-  disp.print("Formato: H:M");                                                         
+  disp.print("Formato: H:M");                                          
+  disp.setCursor(2,2);
+  disp.print(":"); 
   
   valEntradaHora();
   valEntradaMin();
-  disp.clear();
-  painelSensores();
-  
+
+  return;
 }
 
 void valEntradaHora()
@@ -429,15 +437,16 @@ void valEntradaHora()
    
    if(val_hora < 10) 
    {
-    disp.setCursor(1,2);//colunaXlinha
-    disp.print(" ");
-    disp.setCursor(0,2);
-    disp.print(val_hora);
-   }
-   if(val_hora > 9)
-   {
     disp.setCursor(0,2);//colunaXlinha
     disp.print(" ");
+    disp.setCursor(1,2);
+    disp.print(val_hora);
+   }
+   
+   if(val_hora > 9)
+   {
+    //disp.setCursor(1,2);//colunaXlinha
+    //disp.print(" ");
     disp.setCursor(0,2);
     disp.print(val_hora);
    }
@@ -477,66 +486,21 @@ void valEntradaMin()
     t_butDown = 0x00;
    }
    
-   if(val_hora < 10) 
-   {
-    disp.setCursor(1,2);//colunaXlinha
-    disp.print(":");
-    
+   
     if(val_min < 10) 
    {
-    disp.setCursor(2,2);//colunaXlinha
-    disp.print("   ");
-    disp.setCursor(2,2);
+    disp.setCursor(4,2);//colunaXlinha
+    disp.print(" ");
+    disp.setCursor(3,2);
     disp.print(val_min);
    }
    
    if(val_min > 9)
    {
-    disp.setCursor(2,2);//colunaXlinha
-    disp.print("   ");
-    disp.setCursor(2,2);
-    disp.print(val_hora);
+    disp.setCursor(3,2);
+    disp.print(val_min);
    }
       
-   }
-   if(val_hora > 9)
-   {
-    disp.setCursor(2,2);//colunaXlinha
-    disp.print(":");
-    
-    if(val_min < 10) 
-   {
-    disp.setCursor(3,2);//colunaXlinha
-    disp.print("  ");
-    disp.setCursor(3,2);
-    disp.print(val_min);
-   }
-   
-   if(val_min > 9)
-   {
-    disp.setCursor(3,2);//colunaXlinha
-    disp.print("  ");
-    disp.setCursor(3,2);
-    disp.print(val_hora);
-   }
-   }
-
-   /*if(val_min < 10) 
-   {
-    disp.setCursor(3,2);//colunaXlinha
-    disp.print(" ");
-    disp.setCursor(2,2);
-    disp.print(val_min);
-   }*/
-   
-   /*if(val_min > 9)
-   {
-    disp.setCursor(2,2);//colunaXlinha
-    disp.print(" ");
-    disp.setCursor(2,2);
-    disp.print(val_hora);
-   }*/
-
    if(!digitalRead(butEnter)) t_butEnter = 0x01; //botao enter pressionada? flag setada
    if(digitalRead(butEnter) && t_butEnter)
    {
